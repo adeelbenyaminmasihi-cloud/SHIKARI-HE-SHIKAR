@@ -8,7 +8,7 @@ import urllib.parse
 import textwrap
 import requests
 import edge_tts
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageStat
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 PIXABAY_API_KEY = os.environ.get("PIXABAY_API_KEY", "").strip()
@@ -25,7 +25,7 @@ FB_PAGE_ID = os.environ.get("FACEBOOK_PAGE_ID", "").strip()
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9"
 }
 
@@ -84,68 +84,68 @@ FALLBACK_WILDLIFE_TOPICS = [
         "tagline": "Magarmach paani ka badshah kehlata hai, magar Jaguar ke samne wo khud shikar ban jata hai! 🐆🐊",
         "description": "Amazon ke junglon mein Caiman magarmach har janwar ke liye maut hai, lekin jab bhooka Jaguar paani mein chhalang lagata hai to shikari khud shikar ban jata hai!",
         "badge": "SHIKARI HE SHIKAR",
-        "hook_visual_1": "jaguar wild jungle",
-        "hook_visual_2": "crocodile water eyes",
+        "hook_visual_1": "jaguar wild cat river",
+        "hook_visual_2": "crocodile alligator water",
         "context_urdu": "ایمیزون کے گھنے اور خطرناک جنگلوں میں کیمن مگرمچھ کو پانی کا بے تاج بادشاہ مانا جاتا ہے، جو پانی کے اندر چھپ کر کنارے پر آنے والے ہر جانور کو پلک جھپکتے ہی نگل لیتا ہے۔",
         "context_cap1": "AMAZON KA KHAUFNAK SHIKARI:",
         "context_cap2": "PAANI KA BADSHAH MAGARMACH!",
-        "ctx_visual_1": "alligator river swamp",
-        "ctx_visual_2": "amazon rainforest river",
+        "ctx_visual_1": "crocodile swamp river",
+        "ctx_visual_2": "amazon rainforest river daylight",
         "event_urdu": "مگر قدرت کا ایک ایسا خاموش شکاری بھی ہے جس کے سامنے یہ خوفناک مگرمچھ بھی بے بس ہو جاتا ہے، اور وہ ہے ایمیزون کا طاقتور ترین جیگوار!",
         "event_cap1": "MAGARMACH KA ASLI KHAUF:",
         "event_cap2": "TAQATWAR AMAZON JAGUAR!",
-        "evt_visual_1": "jaguar walking forest",
-        "evt_visual_2": "leopard eyes close up",
+        "evt_visual_1": "jaguar walking jungle daylight",
+        "evt_visual_2": "leopard face closeup",
         "impact_urdu": "باقی بڑی بلیوں کے برعکس جیگوار پانی سے ڈرتا نہیں بلکہ ایک ماہر تیراک کی طرح دریا میں اتر کر مگرمچھ کو اسی کے گھر میں جا کر للکارتا ہے۔",
         "impact_cap1": "PAANI SE NA DARNE WALA:",
         "impact_cap2": "DARYA MEIN MAUT KI CHHALANG!",
-        "imp_visual_1": "jaguar swimming water",
+        "imp_visual_1": "jaguar swimming river water",
         "imp_visual_2": "crocodile swimming river",
         "response_urdu": "جیگوار کے جبڑوں کی طاقت تمام بڑی بلیوں میں سب سے زیادہ ہوتی ہے، جو شیر سے بھی دوگنی طاقت سے سیدھا مگرمچھ کی کھوپڑی اور گردن کو ایک ہی وار میں توڑ دیتا ہے۔",
         "response_cap1": "SAB SE TAQATWAR JABRAY:",
         "response_cap2": "EK WAR MEIN KHOPRI KHATAM!",
-        "res_visual_1": "big cat roaring teeth",
+        "res_visual_1": "jaguar roaring teeth",
         "res_visual_2": "crocodile jaws open",
         "future_urdu": "یوں جو مگرمچھ خود کسی شکار کے انتظار میں گھات لگائے بیٹھا تھا، چند ہی سیکنڈز میں جیگوار کے پنجوں میں آ کر خود شکار بن جاتا ہے۔",
         "future_cap1": "QUDRAT KA QANOON:",
         "future_cap2": "SHIKARI KHUD SHIKAR BAN GAYA!",
-        "fut_visual_1": "jaguar resting tree",
-        "fut_visual_2": "wilderness sunset jungle",
-        "vid_queries": ["jaguar", "crocodile", "jungle river", "wild cat"]
+        "fut_visual_1": "jaguar resting tree branch",
+        "fut_visual_2": "tropical jungle river sunlight",
+        "vid_queries": ["jaguar", "crocodile", "jungle river", "leopard"]
     },
     {
         "topic": "Orca Killer Whale vs Great White Shark: Samandar Mein Shikari Ka Shikar",
         "tagline": "Great White Shark se poora samandar darta hai, magar Orca ko dekh kar Shark kyun bhaag jati hai? 🐋🦈",
         "description": "Samandar ke sab se khaufnak shikari Great White Shark ka jab Killer Whale (Orca) se samna hota hai, to kaise shikari khud shikar ban jata hai!",
         "badge": "OCEAN PREDATORS",
-        "hook_visual_1": "great white shark underwater",
-        "hook_visual_2": "orca killer whale ocean",
+        "hook_visual_1": "great white shark ocean",
+        "hook_visual_2": "orca killer whale jumping",
         "context_urdu": "لاکھوں سالوں سے گریٹ وائٹ شارک کو سمندر کا سب سے خوفناک شکاری سمجھا جاتا رہا ہے، جس کے تیز دھار دانتوں سے بچنا کسی بھی سمندری مخلوق کے لیے ناممکن ہوتا ہے۔",
         "context_cap1": "SAMANDAR KA KHAUF:",
         "context_cap2": "GREAT WHITE SHARK!",
-        "ctx_visual_1": "shark teeth underwater",
-        "ctx_visual_2": "deep blue ocean waves",
+        "ctx_visual_1": "shark swimming blue water",
+        "ctx_visual_2": "ocean waves sunlight",
         "event_urdu": "لیکن جب سمندر کے اصل حکمران یعنی اورکا کلر وہیلز کا جھنڈ میدان میں آتا ہے، تو یہی خوفناک شارک اپنی جان بچانے کے لیے سینکڑوں میل دور بھاگنے پر مجبور ہو جاتی ہے۔",
         "event_cap1": "SAMANDAR KA ASLI BADSHAH:",
         "event_cap2": "ORCA KILLER WHALE!",
-        "evt_visual_1": "killer whale jumping",
-        "evt_visual_2": "shark swimming fast",
+        "evt_visual_1": "orca killer whale ocean",
+        "evt_visual_2": "great white shark underwater",
         "impact_urdu": "اورکا وہیلز نہ صرف شارک سے جسامت میں بہت بڑی ہوتی ہیں بلکہ ان کا دماغ انتہائی تیز ہوتا ہے اور وہ ایک منظم فوج کی طرح مل کر حملہ کرتی ہیں۔",
         "impact_cap1": "TEZ DIMAAGH AUR TEAMWORK:",
         "impact_cap2": "FOUJ KI TARAH HAMLA!",
-        "imp_visual_1": "pod of whales ocean",
-        "imp_visual_2": "underwater predator fish",
+        "imp_visual_1": "orca whales pod ocean",
+        "imp_visual_2": "shark underwater blue sea",
         "response_urdu": "اورکا وہیل شارک کو ٹکر مار کر اسے پانی میں الٹا کر دیتی ہے، جس سے شارک پر فالج جیسی کیفیت طاری ہو جاتی ہے جسے ٹونک اموبیلائزیشن کہا جاتا ہے۔",
         "response_cap1": "SHARK KO ULTA KAR DENA:",
         "response_cap2": "TONIC IMMOBILITY KA JAAL!",
-        "res_visual_1": "whale underwater diving",
-        "res_visual_2": "shark deep sea",
+        "res_visual_1": "whale breach ocean splash",
+        "res_visual_2": "shark swimming coral reef",
         "future_urdu": "اس کے بعد سمندر کا سب سے بڑا شکاری بے بس ہو کر خود شکار بن جاتا ہے، اور اس علاقے سے شارکس مہینوں تک غائب ہو جاتی ہیں۔",
         "future_cap1": "SAMANDAR KA FAISLA:",
         "future_cap2": "SHARK KHUD SHIKAR BAN GAYI!",
-        "fut_visual_1": "ocean sunset waves",
-        "fut_visual_2": "whale tail water",
-        "vid_queries": ["shark", "whale", "ocean underwater", "sea predator"]
+        "fut_visual_1": "bright ocean horizon sunlight",
+        "fut_visual_2": "orca whale tail water",
+        "vid_queries": ["shark", "whale", "ocean", "underwater"]
     },
     {
         "topic": "Honey Badger vs Deadly King Cobra: Zehreele Shikari Ka Be-Khauf Shikar",
@@ -153,135 +153,135 @@ FALLBACK_WILDLIFE_TOPICS = [
         "description": "Jungle ka sab se be-khauf janwar Honey Badger kaise khatarnak aur zehreele saanpon ko apna shikar bana leta hai? Dekhiye qudrat ka hairat angez manzar!",
         "badge": "FEARLESS HUNTER",
         "hook_visual_1": "king cobra snake hood",
-        "hook_visual_2": "badger wild animal",
+        "hook_visual_2": "honey badger wild animal",
         "context_urdu": "افریقہ اور ایشیا کے جنگلوں میں زہریلے کوبرا اور بلیک مامبا جیسے سانپ موت کی علامت سمجھے جاتے ہیں، جن کا ایک ڈنک بڑے سے بڑے جانور کو منٹوں میں ختم کر سکتا ہے۔",
         "context_cap1": "ZEHREELE SAANP KA KHAUF:",
         "context_cap2": "EK DUNK MEIN KHEL KHATAM!",
-        "ctx_visual_1": "venomous snake fangs",
-        "ctx_visual_2": "african savanna dry grass",
+        "ctx_visual_1": "cobra snake closeup",
+        "ctx_visual_2": "african savanna daylight",
         "event_urdu": "مگر ہنی بیجر جسے اردو میں بجو کہا جاتا ہے، ان جان لیوا سانپوں سے ڈرنے کے بجائے الٹا انہیں اپنا پسندیدہ کھانا بنانے کے لیے ڈھونڈتا پھرتا ہے۔",
         "event_cap1": "JUNGLE KA BE-KHAUF BADSHAH:",
         "event_cap2": "HONEY BADGER KA HAMLA!",
-        "evt_visual_1": "fierce small mammal",
-        "evt_visual_2": "snake slithering sand",
+        "evt_visual_1": "badger mammal wildlife",
+        "evt_visual_2": "snake desert sand",
         "impact_urdu": "ہنی بیجر کی چمڑی اتنی موٹی اور ڈھیلی ہوتی ہے کہ سانپ کے دانت اکثر اس کے جسم میں اتر ہی نہیں پاتے اور وہ پلٹ کر سانپ کی گردن دبوچ لیتا ہے۔",
         "impact_cap1": "MOTI CHAMRI KI DHAAL:",
         "impact_cap2": "SAANP KE DAANT BE-ASAR!",
-        "imp_visual_1": "wild animal desert",
-        "imp_visual_2": "cobra strike pose",
+        "imp_visual_1": "badger walking savanna",
+        "imp_visual_2": "king cobra strike",
         "response_urdu": "سب سے حیرت انگیز بات یہ ہے کہ ہنی بیجر کے خون میں قدرتی طور پر زہر کے خلاف ایسی قوت مدافعت ہوتی ہے کہ اگر کوبرا اسے ڈس بھی لے، تو یہ تھوڑی دیر بے ہوش ہونے کے بعد دوبارہ اٹھ کھڑا ہوتا ہے!",
         "response_cap1": "QUDRATI IMMUNITY KA RAAZ:",
         "response_cap2": "ZEHAR BHI BE-ASAR HO JATA HAI!",
-        "res_visual_1": "snake scales closeup",
-        "res_visual_2": "safari wildlife nature",
+        "res_visual_1": "snake scales macro",
+        "res_visual_2": "african safari wildlife",
         "future_urdu": "ہوش میں آتے ہی ہنی بیجر اپنا ادھورا شکار مکمل کرتا ہے اور یوں جنگل کا سب سے زہریلا شکاری خود شکار بن کر ختم ہو جاتا ہے۔",
         "future_cap1": "SHIKARI HE SHIKAR:",
         "future_cap2": "ZEHREELA COBRA HAAR GAYA!",
-        "fut_visual_1": "desert sunset landscape",
-        "fut_visual_2": "wild predator walking",
-        "vid_queries": ["snake", "cobra", "wildlife", "desert animal"]
+        "fut_visual_1": "savanna golden sunlight",
+        "fut_visual_2": "wild animal nature",
+        "vid_queries": ["snake", "cobra", "safari", "wildlife"]
     },
     {
         "topic": "Golden Eagle vs Red Fox and Mountain Wolves: Aasman Se Utarti Maut",
         "tagline": "Zameen par shikar dhoondne wali Lomri aur Bheriye jab khud Uqaab ka shikar ban jate hain! 🦅🦊",
         "description": "Paharon aur barfani maidan mein jab Golden Eagle 240 km/h ki raftar se neeche aata hai, to zameen ke shikari khud shikar ban jate hain!",
         "badge": "SKY PREDATOR",
-        "hook_visual_1": "golden eagle flying",
-        "hook_visual_2": "red fox snow",
+        "hook_visual_1": "golden eagle flying sky",
+        "hook_visual_2": "red fox snow mountain",
         "context_urdu": "برفانی پہاڑوں اور کھلے میدانوں میں لومڑی اور بھیڑیے انتہائی چالاک شکاری مانے جاتے ہیں، جو چھوٹے جانوروں اور پرندوں کا چپکے سے شکار کرتے ہیں۔",
         "context_cap1": "ZAMEEN KE CHALAK SHIKARI:",
         "context_cap2": "LOMRI AUR BHERIYE!",
-        "ctx_visual_1": "fox hunting snow",
-        "ctx_visual_2": "wolf pack winter",
+        "ctx_visual_1": "red fox hunting snow",
+        "ctx_visual_2": "grey wolf winter snow",
         "event_urdu": "لیکن جب وہ اپنے شکار کے پیچھے بھاگ رہے ہوتے ہیں تو انہیں اندازہ بھی نہیں ہوتا کہ بادلوں کے اوپر سے دو تیز ترین آنکھیں خود ان کا نشانہ لے رہی ہیں۔",
         "event_cap1": "AASMAN SE DO TEZ AANKHEIN:",
         "event_cap2": "GOLDEN EAGLE KA NISHANA!",
-        "evt_visual_1": "eagle eyes closeup",
-        "evt_visual_2": "mountain peaks clouds",
+        "evt_visual_1": "golden eagle head closeup",
+        "evt_visual_2": "snowy mountain peaks sun",
         "impact_urdu": "گولڈن ایگل یعنی سنہری عقاب سات فٹ لمبے پروں اور دو سو چالیس کلومیٹر فی گھنٹہ کی طوفانی رفتار کے ساتھ آسمان سے میزائل کی طرح نیچے جھپٹتا ہے۔",
         "impact_cap1": "240 KM/H KI RAFTAR:",
         "impact_cap2": "MISSILE KI TARAH HAMLA!",
-        "imp_visual_1": "eagle diving sky",
-        "imp_visual_2": "snowy mountain valley",
+        "imp_visual_1": "eagle diving wings spread",
+        "imp_visual_2": "mountain valley landscape",
         "response_urdu": "عقاب کے خنجر جیسے پنجوں کی گرفت اتنی خوفناک ہوتی ہے کہ اس کے دباؤ سے لومڑی اور یہاں تک کہ جوان بھیڑیے کی ہڈیاں بھی ٹوٹ جاتی ہیں۔",
         "response_cap1": "KHANJAR JAISE PANJAY:",
         "response_cap2": "LOHE JAISI MAZBOOT GIRAFT!",
-        "res_visual_1": "hawk talons closeup",
-        "res_visual_2": "fox running snow",
+        "res_visual_1": "eagle talons bird of prey",
+        "res_visual_2": "fox running winter",
         "future_urdu": "جو شکاری زمین پر کسی دوسرے کا شکار کرنے نکلا تھا، عقاب کے پنجوں میں جکڑ کر ہواؤں میں اڑتا ہوا خود شکار بن جاتا ہے۔",
         "future_cap1": "AASMAN KA FAISLA:",
         "future_cap2": "SHIKARI KHUD SHIKAR BANA!",
-        "fut_visual_1": "eagle perched rock",
-        "fut_visual_2": "winter mountains sunset",
-        "vid_queries": ["eagle", "fox", "wolf", "mountain wildlife"]
+        "fut_visual_1": "golden eagle perched cliff",
+        "fut_visual_2": "bright mountain sunrise",
+        "vid_queries": ["eagle", "fox", "wolf", "mountain"]
     },
     {
         "topic": "Mongoose vs Black Mamba: Maut Ke Saudagar Ka Sab Se Bara Dushman",
         "tagline": "Duniya ke sab se tez aur zehreele saanp Black Mamba ko Mongoose kaise shikar karta hai? 🐍⚡",
         "description": "Black Mamba aur Cobra ki bijli jaisi raftar ke samne har janwar haar jata hai, magar Nevla (Mongoose) apni phurti se shikari ko shikar bana deta hai!",
         "badge": "DEADLY DUEL",
-        "hook_visual_1": "mongoose wild animal",
-        "hook_visual_2": "black snake dangerous",
+        "hook_visual_1": "mongoose animal standing",
+        "hook_visual_2": "cobra snake hood",
         "context_urdu": "افریقہ کے جنگلوں میں بلیک مامبا اور کنگ کوبرا ایسے شکاری ہیں جن کے سایے سے بھی شیر اور ہاتھی جیسے بڑے جانور راستہ بدل لیتے ہیں۔",
         "context_cap1": "JUNGLE KA SAB SE BADA KHAUF:",
         "context_cap2": "ZEHREELA BLACK MAMBA!",
-        "ctx_visual_1": "snake open mouth fangs",
-        "ctx_visual_2": "wild savanna bushes",
+        "ctx_visual_1": "snake fangs closeup",
+        "ctx_visual_2": "savanna grassland sun",
         "event_urdu": "مگر ایک چھوٹا سا نیولا یعنی مونگوز وہ واحد شکاری ہے جو سانپ کو دیکھ کر بھاگتا نہیں بلکہ سیدھا اس کی آنکھوں میں آنکھیں ڈال کر مقابلہ شروع کر دیتا ہے۔",
         "event_cap1": "CHOTA JISM MAGAR BADA JIGAR:",
         "event_cap2": "NEVLE KA KHULA CHALLENGE!",
-        "evt_visual_1": "meerkat mongoose standing",
-        "evt_visual_2": "cobra raised hood",
+        "evt_visual_1": "mongoose desert sunlight",
+        "evt_visual_2": "cobra snake sand",
         "impact_urdu": "سانپ بار بار بجلی کی تیزی سے وار کرتا ہے، لیکن نیولے کے ریفلیکسز اتنے تیز ہوتے ہیں کہ وہ ملی سیکنڈز کے فرق سے ہر وار کو ہوا میں ہی چکما دے دیتا ہے۔",
         "impact_cap1": "BIJLI JAISE REFLEXES:",
         "impact_cap2": "HAR WAR KO CHAKMA!",
-        "imp_visual_1": "fast animal jumping",
-        "imp_visual_2": "snake striking sand",
+        "imp_visual_1": "mongoose jumping action",
+        "imp_visual_2": "snake striking pose",
         "response_urdu": "لگاتار حملے کر کے جب زہریلا سانپ تھک کر چور ہو جاتا ہے، تو نیولا موقع پاتے ہی چھلانگ لگا کر سیدھا سانپ کے سر کو اپنے تیز دانتوں میں دبوچ لیتا ہے۔",
         "response_cap1": "JAB SAANP THAK JATA HAI:",
         "response_cap2": "EK CHHALANG MEIN FAISLA!",
-        "res_visual_1": "predator teeth bite",
-        "res_visual_2": "snake in dry grass",
+        "res_visual_1": "mongoose closeup face",
+        "res_visual_2": "snake in grass",
         "future_urdu": "صرف چند منٹوں کے اس سنسنی خیز مقابلے میں زہر کا بادشاہ کہلانے والا شکاری بے بس ہو کر نیولے کا شکار بن جاتا ہے۔",
         "future_cap1": "SANSANI KHEZ MUQABLA:",
         "future_cap2": "SHIKARI HE SHIKAR BAN GAYA!",
-        "fut_visual_1": "mongoose desert nature",
-        "fut_visual_2": "african sunset wildlife",
-        "vid_queries": ["snake", "mongoose", "safari", "predator"]
+        "fut_visual_1": "mongoose standing rock",
+        "fut_visual_2": "golden african plains",
+        "vid_queries": ["snake", "meerkat", "safari", "wildlife"]
     },
     {
         "topic": "Giant River Otters vs Caiman: Amazon Ki Nadi Mein Gang War",
         "tagline": "Akela Caiman magarmach khatarnak hai, magar Giant Otters ki family usey zinda chaba jati hai! 🦦🐊",
         "description": "Amazon ki nadiyon mein Giant River Otters jinhein 'River Wolves' kaha jata hai, kaise khaufnak Caiman aur Anaconda ka shikar karte hain!",
         "badge": "RIVER WOLVES",
-        "hook_visual_1": "otter swimming water",
-        "hook_visual_2": "alligator jaws water",
+        "hook_visual_1": "river otter swimming",
+        "hook_visual_2": "alligator crocodile river",
         "context_urdu": "عام طور پر اودبلاؤ یعنی اوٹرز کو ایک معصوم اور کھیلنے کودنے والا جانور سمجھا جاتا ہے، جو مچھلیاں پکڑ کر اپنا گزارہ کرتا ہے۔",
         "context_cap1": "DIKHNE MEIN MASOOM:",
         "context_cap2": "MAGAR PAANI KE BHERIYE!",
-        "ctx_visual_1": "river otter family",
-        "ctx_visual_2": "amazon river jungle",
+        "ctx_visual_1": "river otters family",
+        "ctx_visual_2": "amazon river forest",
         "event_urdu": "لیکن ایمیزون کے جائنٹ ریور اوٹرز چھ فٹ تک لمبے ہوتے ہیں اور مقامی زبان میں انہیں دریائی بھیڑیے کہا جاتا ہے کیونکہ یہ پورے خاندان کے ساتھ مل کر شکار کرتے ہیں۔",
         "event_cap1": "6 FOOT LAMBAY GIANT OTTERS:",
         "event_cap2": "POORI FAMILY KA EK SATH HAMLA!",
-        "evt_visual_1": "otters swimming group",
-        "evt_visual_2": "crocodile hiding water",
+        "evt_visual_1": "otter closeup water",
+        "evt_visual_2": "crocodile eyes water",
         "impact_urdu": "جب کوئی کیمن مگرمچھ ان کے علاقے میں شکار کرنے کے ارادے سے آتا ہے، تو سات سے آٹھ اوٹرز مل کر اسے چاروں طرف سے گھیر لیتے ہیں۔",
         "impact_cap1": "CHARON TARAF SE GHERAO:",
         "impact_cap2": "MAGARMACH PHANS GAYA!",
-        "imp_visual_1": "splashing river water",
-        "imp_visual_2": "alligator tail splash",
+        "imp_visual_1": "river water splash",
+        "imp_visual_2": "crocodile jaws open",
         "response_urdu": "کچھ اوٹرز آگے سے مگرمچھ کا دھیان بھٹکاتے ہیں جبکہ باقی پیچھے سے اس کی دم اور گردن پر تیز دھار دانتوں سے تابڑ توڑ حملے کرتے ہیں یہاں تک کہ مگرمچھ نڈھال ہو جاتا ہے۔",
         "response_cap1": "SOCHI SAMJHI STRATEGY:",
         "response_cap2": "HAR TARAF SE TABAR-TOR WAR!",
-        "res_visual_1": "otter teeth closeup",
-        "res_visual_2": "muddy river bank",
+        "res_visual_1": "otter swimming fast",
+        "res_visual_2": "river bank jungle",
         "future_urdu": "یوں اتحاد اور حکمت عملی کی طاقت سے ایمیزون کا خوفناک شکاری مگرمچھ اپنے ہی پانی میں ان دریائی بھیڑیوں کا شکار بن جاتا ہے۔",
         "future_cap1": "ITTEHAD KI TAQAT:",
         "future_cap2": "SHIKARI KHUD SHIKAR BAN GAYA!",
-        "fut_visual_1": "rainforest river mist",
+        "fut_visual_1": "rainforest river sunlight",
         "fut_visual_2": "otters resting log",
-        "vid_queries": ["otter", "crocodile", "river wildlife", "jungle"]
+        "vid_queries": ["otter", "crocodile", "river", "jungle"]
     }
 ]
 
@@ -307,7 +307,6 @@ def save_used_topics(used_list):
 
 
 def get_fresh_wildlife_seeds(used_topics):
-    """Selects unused wildlife 'Shikari he Shikar' ideas to feed Gemini for fresh topics."""
     used_lower = " | ".join(used_topics).lower()
     fresh = [idea for idea in WILDLIFE_SEED_IDEAS if idea.lower() not in used_lower]
     if len(fresh) < 8:
@@ -317,7 +316,6 @@ def get_fresh_wildlife_seeds(used_topics):
 
 
 def discover_gemini_model():
-    """Dynamically finds a working Gemini model via REST API so 404 errors never happen."""
     if not GEMINI_API_KEY:
         return None
     try:
@@ -353,8 +351,7 @@ def discover_gemini_model():
 
 
 def build_fourteen_scenes_from_template(chosen):
-    """Expands a wildlife topic template into a full 14-scene (~2 minute) documentary script."""
-    v_queries = chosen.get("vid_queries", ["wildlife predator", "jungle animal", "nature", "safari"])
+    v_queries = chosen.get("vid_queries", ["wildlife", "jungle", "nature", "safari"])
     while len(v_queries) < 4:
         v_queries.append("wildlife")
 
@@ -386,8 +383,8 @@ def build_fourteen_scenes_from_template(chosen):
                 "tts_urdu": "قدرت کے اس میدانِ جنگ میں ہر جانور کو زندہ رہنے کے لیے یا تو تیز دوڑنا پڑتا ہے یا پھر اپنے سے بڑے شکاری کو مات دینے کا ہنر سیکھنا پڑتا ہے۔",
                 "caption_part1": "ZINDA REHNE KI JANG:",
                 "caption_part2": "HAR KADAM PAR KHATRA!",
-                "search_query_1": "wild jungle forest dark",
-                "search_query_2": "predator eyes in dark",
+                "search_query_1": "african safari lions daylight",
+                "search_query_2": "leopard in tree sunlight",
                 "video_query": ""
             },
             {
@@ -402,8 +399,8 @@ def build_fourteen_scenes_from_template(chosen):
                 "tts_urdu": "وائلڈ لائف ماہرین اور کیمروں میں قید ہونے والے مناظر بتاتے ہیں کہ جب یہ دونوں آمنے سامنے آتے ہیں تو جنگل میں سناٹا چھا جاتا ہے۔",
                 "caption_part1": "JAB DONO AAMNE SAMNE AAYE:",
                 "caption_part2": "JUNGLE MEIN SANNATA!",
-                "search_query_1": "safari wildlife camera",
-                "search_query_2": "wild animals face off",
+                "search_query_1": "tiger walking jungle river",
+                "search_query_2": "wild animals savanna",
                 "video_query": ""
             },
             {
@@ -418,8 +415,8 @@ def build_fourteen_scenes_from_template(chosen):
                 "tts_urdu": "یہاں طاقت سے زیادہ رفتار، صبر اور صحیح وقت پر کیے گئے ایک زوردار وار کا فیصلہ چلتا ہے، جہاں ایک چھوٹی سی غلطی کا مطلب سیدھی موت ہے۔",
                 "caption_part1": "EK CHOTI SI GHALTI:",
                 "caption_part2": "AUR KHEL HAMESHA KE LIYE KHATAM!",
-                "search_query_1": "animal running fast dust",
-                "search_query_2": "claws predator hunting",
+                "search_query_1": "cheetah running fast savanna",
+                "search_query_2": "eagle flying wings spread",
                 "video_query": ""
             },
             {
@@ -434,16 +431,16 @@ def build_fourteen_scenes_from_template(chosen):
                 "tts_urdu": "اپنے آپ کو ناقابلِ شکست سمجھنے والا شکاری جب اس اچانک اور طوفانی جوابی حملے کی زد میں آتا ہے تو اسے سنبھلنے کا موقع تک نہیں ملتا۔",
                 "caption_part1": "ACHANAK JAWABI HAMLA:",
                 "caption_part2": "SAMBHALNE KA MAUQA NAHI MILA!",
-                "search_query_1": "wild animal fight action",
-                "search_query_2": "dramatic storm clouds nature",
+                "search_query_1": "lion roaring closeup",
+                "search_query_2": "crocodile splashing river",
                 "video_query": v_queries[3]
             },
             {
                 "tts_urdu": "یہی قدرت کا وہ حیرت انگیز توازن ہے جو کسی بھی ایک شکاری کو پورے جنگل یا سمندر پر اندھا راج کرنے کی اجازت نہیں دیتا۔",
                 "caption_part1": "QUDRAT KA AMAZING BALANCE:",
                 "caption_part2": "HAR SHIKARI KE UPAR EK SHIKARI!",
-                "search_query_1": "african savanna ecosystem",
-                "search_query_2": "wilderness river aerial",
+                "search_query_1": "serengeti national park wildlife",
+                "search_query_2": "tropical rainforest waterfall",
                 "video_query": ""
             },
             {
@@ -458,24 +455,24 @@ def build_fourteen_scenes_from_template(chosen):
                 "tts_urdu": "اس واقعے سے ثابت ہوتا ہے کہ جنگل کی دنیا میں غرور اور طاقت ہمیشہ کام نہیں آتی، بلکہ ہوشیاری اور بے خوفی ہی اصل ہتھیار ہیں۔",
                 "caption_part1": "TAQAT NAHI HOSHIYARI:",
                 "caption_part2": "BE-KHAUFI ASLI HATHIYAR HAI!",
-                "search_query_1": "lion resting sunset",
-                "search_query_2": "eagle soaring high mountain",
+                "search_query_1": "lion king savanna golden hour",
+                "search_query_2": "hawk perched mountain peak",
                 "video_query": ""
             },
             {
                 "tts_urdu": "شکاری ہی شکار کی یہ سنسنی خیز داستان ہمیں یاد دلاتی ہے کہ فطرت کے راز انسان کی سوچ سے کہیں زیادہ گہرے اور حیران کن ہیں۔",
                 "caption_part1": "SHIKARI HE SHIKAR:",
                 "caption_part2": "FITRAT KE HAIRAN KUN RAAZ!",
-                "search_query_1": "deep jungle sunlight rays",
-                "search_query_2": "wild animal silhouette sunset",
+                "search_query_1": "green jungle sunlight rays",
+                "search_query_2": "elephant herd african plains",
                 "video_query": ""
             },
             {
                 "tts_urdu": "وائلڈ لائف اور شکاری جانوروں کی ایسی ہی سنسنی خیز اور سچی دستاویزی ویڈیوز روزانہ دیکھنے کے لیے ہمارے چینل کو ابھی سبسکرائب اور فالو کر لیں!",
                 "caption_part1": "DAILY WILDLIFE VIDEOS KE LIYE:",
                 "caption_part2": "ABHI SUBSCRIBE AUR FOLLOW KAREIN!",
-                "search_query_1": "smartphone video streaming",
-                "search_query_2": "wildlife photographer camera",
+                "search_query_1": "wildlife photographer nature",
+                "search_query_2": "majestic tiger portrait",
                 "video_query": ""
             }
         ]
@@ -483,7 +480,6 @@ def build_fourteen_scenes_from_template(chosen):
 
 
 def generate_script_via_gemini(used_topics):
-    """Uses Gemini REST API to generate a fresh 14-scene (2-minute) Wildlife 'Shikari he Shikar' documentary script."""
     if not GEMINI_API_KEY:
         return None
 
@@ -516,13 +512,13 @@ Return ONLY a raw, valid JSON object with NO markdown formatting and NO code fen
       "tts_urdu": "Must be written in REAL URDU SCRIPT (اردو رسم الخط) around 22 to 28 words in dramatic National Geographic documentary style so TTS speaks naturally for ~8.5 seconds.",
       "caption_part1": "SHORT UPPERCASE ROMAN URDU LINE 1 (MAX 24 CHARS)",
       "caption_part2": "SHORT UPPERCASE ROMAN URDU LINE 2 (MAX 24 CHARS)",
-      "search_query_1": "2-3 word English stock photo keyword of the specific animal/nature scene (e.g. jaguar swimming river)",
-      "search_query_2": "2-3 word English stock photo keyword of the second animal/action (e.g. crocodile jaws water)",
-      "video_query": "1-2 word English stock video keyword of the animal (e.g. jaguar, crocodile, eagle, snake, shark)"
+      "search_query_1": "2-4 word English visual description of the animal in bright daylight for AI image generation (e.g. jaguar hunting crocodile in amazon river)",
+      "search_query_2": "2-4 word English visual description of the second animal shot in bright daylight (e.g. caiman crocodile open jaws in river)",
+      "video_query": "1-2 word simple English animal name for stock video search (e.g. jaguar, crocodile, eagle, snake, shark, lion, tiger, wolf)"
     }}
   ]
 }}
-Ensure the `scenes` array has EXACTLY 14 scenes so the total video duration is 2 minutes (~120 seconds), telling a complete dramatic story from the initial stalk/ambush to the final reversal where the hunter becomes the hunted."""
+Ensure the `scenes` array has EXACTLY 14 scenes so the total video duration is 2 minutes (~120 seconds)."""
 
     url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={GEMINI_API_KEY}"
     payload = {
@@ -561,14 +557,12 @@ Ensure the `scenes` array has EXACTLY 14 scenes so the total video duration is 2
 def generate_script_data():
     used = load_used_topics()
 
-    # 1. Try live Gemini AI generation first for endless unique wildlife topics
     ai_script = generate_script_via_gemini(used)
     if ai_script:
         used.append(ai_script["topic"])
         save_used_topics(used)
         return ai_script
 
-    # 2. Bulletproof fallback to built-in 14-scene (2-minute) Wildlife "Shikari he Shikar" scripts
     available = [t for t in FALLBACK_WILDLIFE_TOPICS if t["topic"] not in used]
     if not available:
         used = []
@@ -581,39 +575,121 @@ def generate_script_data():
     return build_fourteen_scenes_from_template(chosen)
 
 
+def verify_and_grade_image(filepath):
+    """
+    Strictly verifies that a downloaded image is NOT dark/black/blank,
+    auto-brightens dark-ish photos, and normalizes size to 1080x1920 RGB.
+    """
+    try:
+        with Image.open(filepath) as im:
+            im = im.convert("RGB")
+            w, h = im.size
+            if w < 240 or h < 240:
+                return False
+
+            stat = ImageStat.Stat(im)
+            mean_brightness = sum(stat.mean) / 3.0
+            mean_stddev = sum(stat.stddev) / 3.0
+
+            # Reject solid black/brown/blank images (fixes the dark screen bug!)
+            if mean_brightness < 22 or mean_stddev < 10:
+                print(f"  [!] Rejecting dark/blank image (brightness={mean_brightness:.1f}, stddev={mean_stddev:.1f})")
+                return False
+
+            # Center-crop & resize cleanly to 1080x1920 so FFmpeg never has aspect-ratio glitches
+            target_ratio = 1080 / 1920
+            img_ratio = w / h
+            if img_ratio > target_ratio:
+                new_w = int(h * target_ratio)
+                left = (w - new_w) // 2
+                im = im.crop((left, 0, left + new_w, h))
+            else:
+                new_h = int(w / target_ratio)
+                top = (h - new_h) // 2
+                im = im.crop((0, top, w, top + new_h))
+            im = im.resize((1080, 1920), Image.Resampling.LANCZOS)
+
+            # If the image is somewhat dim, automatically boost brightness so video is vivid
+            if mean_brightness < 85:
+                boost = min(1.65, max(1.18, 95.0 / max(mean_brightness, 1.0)))
+                im = ImageEnhance.Brightness(im).enhance(boost)
+
+            im = ImageEnhance.Contrast(im).enhance(1.15)
+            im = ImageEnhance.Color(im).enhance(1.22)
+            im.save(filepath, "JPEG", quality=94)
+        return True
+    except Exception as e:
+        print(f"  [!] Image verification error: {e}")
+        return False
+
+
+def fetch_pollinations_graphic(query, filename):
+    """Generates custom 1080x1920 vertical HD wildlife graphics using Pollinations.ai."""
+    clean_q = re.sub(r"[^a-zA-Z0-9\s,]", " ", query).strip()
+    vivid_prompt = (
+        f"{clean_q}, National Geographic wildlife photography, bright golden daylight, "
+        f"ultra detailed, 8k resolution, vibrant natural colors, sharp focus, cinematic action shot"
+    )
+    encoded_prompt = urllib.parse.quote(vivid_prompt)
+    seed = random.randint(1000, 9999999)
+
+    endpoints = [
+        f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1080&height=1920&seed={seed}&model=flux&nologo=true&enhance=true",
+        f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1080&height=1920&seed={seed}&model=turbo&nologo=true",
+        f"https://gen.pollinations.ai/image/{encoded_prompt}?width=1080&height=1920&seed={seed}&nologo=true"
+    ]
+
+    for url in endpoints:
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=28)
+            if r.status_code == 200 and len(r.content) > 18000:
+                with open(filename, "wb") as f:
+                    f.write(r.content)
+                if verify_and_grade_image(filename):
+                    print(f"  [✓] Pollinations.ai AI Graphic generated for '{query}'")
+                    return filename
+        except Exception as e:
+            print(f"  [!] Pollinations attempt note ({query}): {e}")
+    return None
+
+
 def fetch_contextual_stock_video(query, filename):
     """Fetches HD Stock Video using Official PIXABAY_API_KEY first, then Mixkit fallback."""
     if not query:
         return None
 
-    # 1. Official Pixabay Video API
-    if PIXABAY_API_KEY:
-        try:
-            encoded = urllib.parse.quote(query.strip())
-            p_url = f"https://pixabay.com/api/videos/?key={PIXABAY_API_KEY}&q={encoded}&safesearch=true&per_page=15"
-            r = requests.get(p_url, headers=HEADERS, timeout=20)
-            if r.status_code == 200:
-                hits = r.json().get("hits", [])
-                for hit in hits:
-                    videos = hit.get("videos", {})
-                    vid_url = (
-                        videos.get("medium", {}).get("url")
-                        or videos.get("small", {}).get("url")
-                        or videos.get("large", {}).get("url")
-                    )
-                    if vid_url and vid_url not in USED_MEDIA_URLS:
-                        USED_MEDIA_URLS.add(vid_url)
-                        vr = requests.get(vid_url, headers=HEADERS, timeout=30)
-                        if vr.status_code == 200 and len(vr.content) > 50000:
-                            with open(filename, "wb") as f:
-                                f.write(vr.content)
-                            print(f"  [✓] Pixabay Stock Video downloaded for '{query}'")
-                            return filename
-        except Exception as e:
-            print(f"  [!] Pixabay video skip ({query}): {e}")
+    search_terms = [query.strip()]
+    words = query.strip().split()
+    if len(words) > 1:
+        search_terms.append(words[0])
 
-    # 2. Mixkit Fallback
-    slug = urllib.parse.quote(query.lower().strip())
+    if PIXABAY_API_KEY:
+        for term in search_terms:
+            try:
+                encoded = urllib.parse.quote(term)
+                p_url = f"https://pixabay.com/api/videos/?key={PIXABAY_API_KEY}&q={encoded}&safesearch=true&per_page=15"
+                r = requests.get(p_url, headers=HEADERS, timeout=20)
+                if r.status_code == 200:
+                    hits = r.json().get("hits", [])
+                    for hit in hits:
+                        videos = hit.get("videos", {})
+                        vid_url = (
+                            videos.get("medium", {}).get("url")
+                            or videos.get("small", {}).get("url")
+                            or videos.get("large", {}).get("url")
+                        )
+                        if vid_url and vid_url not in USED_MEDIA_URLS:
+                            USED_MEDIA_URLS.add(vid_url)
+                            vr = requests.get(vid_url, headers=HEADERS, timeout=30)
+                            if vr.status_code == 200 and len(vr.content) > 50000:
+                                with open(filename, "wb") as f:
+                                    f.write(vr.content)
+                                print(f"  [✓] Pixabay Stock Video downloaded for '{term}'")
+                                return filename
+            except Exception as e:
+                print(f"  [!] Pixabay video skip ({term}): {e}")
+
+    slug = urllib.parse.quote(words[0].lower())
     search_url = f"https://mixkit.co/free-stock-video/{slug}/"
     try:
         resp = requests.get(search_url, headers=HEADERS, timeout=18)
@@ -628,88 +704,139 @@ def fetch_contextual_stock_video(query, filename):
                 if vid_resp.status_code == 200 and len(vid_resp.content) > 50000:
                     with open(filename, "wb") as f:
                         f.write(vid_resp.content)
-                    print(f"  [✓] Mixkit Stock Video downloaded for '{query}'")
+                    print(f"  [✓] Mixkit Stock Video downloaded for '{slug}'")
                     return filename
     except Exception:
         pass
     return None
 
 
-def verify_and_grade_image(filepath):
+def create_bright_wildlife_poster(query, filename):
+    """
+    Creates a vibrant, high-contrast emerald & gold studio graphic card if all network sources fail,
+    ensuring the video section is NEVER dark or black.
+    """
+    img = Image.new("RGB", (1080, 1920), (15, 65, 55))
+    draw = ImageDraw.Draw(img)
+
+    for y in range(1920):
+        ratio = y / 1920.0
+        r = int(20 + 95 * (1.0 - abs(ratio - 0.45)))
+        g = int(75 + 115 * (1.0 - ratio * 0.5))
+        b = int(55 + 85 * ratio)
+        draw.line([(0, y), (1080, y)], fill=(r, g, b))
+
+    for radius in range(120, 520, 80):
+        draw.ellipse(
+            [540 - radius, 760 - radius, 540 + radius, 760 + radius],
+            outline=(255, 215, 80),
+            width=3
+        )
+    draw.rounded_rectangle([40, 40, 1040, 1880], radius=36, outline=(255, 215, 0), width=6)
+
     try:
-        with Image.open(filepath) as im:
-            im = im.convert("RGB")
-            w, h = im.size
-            if w < 220 or h < 220:
-                return False
-            im = ImageEnhance.Contrast(im).enhance(1.14)
-            im = ImageEnhance.Color(im).enhance(1.18)
-            im.save(filepath, "JPEG", quality=93)
-        return True
+        title_font = ImageFont.truetype(FONT_BOLD, 68)
+        sub_font = ImageFont.truetype(FONT_BOLD, 42)
     except Exception:
-        return False
+        title_font = ImageFont.load_default()
+        sub_font = ImageFont.load_default()
+
+    lines = textwrap.wrap(query.upper(), width=16)[:3]
+    for i, line in enumerate(lines):
+        bbox = draw.textbbox((0, 0), line, font=title_font)
+        tw = bbox[2] - bbox[0]
+        draw.text(((1080 - tw) // 2, 660 + i * 90), line, font=title_font, fill=(255, 240, 150))
+
+    sub_text = "WILDLIFE DOCUMENTARY HD"
+    sbbox = draw.textbbox((0, 0), sub_text, font=sub_font)
+    stw = sbbox[2] - sbbox[0]
+    draw.text(((1080 - stw) // 2, 980), sub_text, font=sub_font, fill=(255, 255, 255))
+
+    img.save(filename, "JPEG", quality=94)
+    return filename
 
 
 def fetch_exact_scene_photo(query, filename):
-    """Fetches HD Stock Photo using Official PIXABAY_API_KEY first, then Bing HD fallback."""
-    if PIXABAY_API_KEY:
-        try:
-            encoded = urllib.parse.quote(query.strip())
-            p_url = f"https://pixabay.com/api/?key={PIXABAY_API_KEY}&q={encoded}&image_type=photo&safesearch=true&per_page=15"
-            r = requests.get(p_url, headers=HEADERS, timeout=18)
-            if r.status_code == 200:
-                hits = r.json().get("hits", [])
-                for hit in hits:
-                    img_url = hit.get("largeImageURL") or hit.get("webformatURL")
-                    if img_url and img_url not in USED_MEDIA_URLS:
-                        USED_MEDIA_URLS.add(img_url)
-                        img_r = requests.get(img_url, headers=HEADERS, timeout=15)
-                        if img_r.status_code == 200 and len(img_r.content) > 15000:
-                            with open(filename, "wb") as f:
-                                f.write(img_r.content)
-                            if verify_and_grade_image(filename):
-                                print(f"  [✓] Pixabay HD Photo downloaded for '{query}'")
-                                return filename
-        except Exception as e:
-            print(f"  [!] Pixabay photo skip ({query}): {e}")
+    """
+    Multi-Engine Graphics Pipeline:
+    1. Pollinations.ai AI Image Generator (Primary Custom Graphics)
+    2. Official Pixabay HD Photo API (with keyword simplification)
+    3. Wikimedia Commons Public Domain Wildlife Photos
+    4. Bright Wildlife Studio Graphic Poster (Never dark!)
+    """
+    # 1. Pollinations.ai AI Graphics
+    polli_file = fetch_pollinations_graphic(query, filename)
+    if polli_file:
+        return polli_file
 
-    # 2. Bing HD Search Fallback
+    # 2. Official Pixabay Image API
+    if PIXABAY_API_KEY:
+        words = [w for w in re.sub(r"[^a-zA-Z0-9\s]", " ", query).split() if len(w) > 2]
+        candidate_queries = [query.strip()]
+        if len(words) >= 2:
+            candidate_queries.append(f"{words[0]} {words[1]}")
+        if words:
+            candidate_queries.append(words[0])
+
+        for q_try in candidate_queries:
+            try:
+                encoded = urllib.parse.quote(q_try)
+                p_url = f"https://pixabay.com/api/?key={PIXABAY_API_KEY}&q={encoded}&image_type=photo&safesearch=true&per_page=15"
+                r = requests.get(p_url, headers=HEADERS, timeout=18)
+                if r.status_code == 200:
+                    hits = r.json().get("hits", [])
+                    for hit in hits:
+                        img_url = hit.get("largeImageURL") or hit.get("webformatURL")
+                        if img_url and img_url not in USED_MEDIA_URLS:
+                            USED_MEDIA_URLS.add(img_url)
+                            img_r = requests.get(img_url, headers=HEADERS, timeout=15)
+                            if img_r.status_code == 200 and len(img_r.content) > 15000:
+                                with open(filename, "wb") as f:
+                                    f.write(img_r.content)
+                                if verify_and_grade_image(filename):
+                                    print(f"  [✓] Pixabay HD Photo downloaded for '{q_try}'")
+                                    return filename
+            except Exception as e:
+                print(f"  [!] Pixabay photo skip ({q_try}): {e}")
+
+    # 3. Wikimedia Commons High-Res Wildlife API
     try:
-        encoded = urllib.parse.quote(f"{query} wildlife photography")
-        b_url = f"https://www.bing.com/images/async?q={encoded}&first=1&count=15&adlt=off&qft=+filterui:imagesize-large"
-        r = requests.get(b_url, headers=HEADERS, timeout=18)
+        w_url = (
+            "https://commons.wikimedia.org/w/api.php"
+            f"?action=query&generator=search&gsrsearch=filetype:bitmap%20{urllib.parse.quote(query)}"
+            "&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=1280&format=json"
+        )
+        r = requests.get(w_url, headers=HEADERS, timeout=15)
         if r.status_code == 200:
-            urls = re.findall(r'murl&quot;:&quot;(https?://[^&]+?\.(?:jpg|jpeg|png))&quot;', r.text)
-            fresh = [u for u in urls if u not in USED_MEDIA_URLS]
-            for img_url in fresh[:5]:
-                try:
+            pages = r.json().get("query", {}).get("pages", {})
+            for _, pdata in pages.items():
+                ii = pdata.get("imageinfo", [{}])[0]
+                img_url = ii.get("thumburl") or ii.get("url")
+                if img_url and img_url not in USED_MEDIA_URLS:
                     USED_MEDIA_URLS.add(img_url)
-                    img_r = requests.get(img_url, headers=HEADERS, timeout=12)
+                    img_r = requests.get(img_url, headers=HEADERS, timeout=15)
                     if img_r.status_code == 200 and len(img_r.content) > 18000:
                         with open(filename, "wb") as f:
                             f.write(img_r.content)
                         if verify_and_grade_image(filename):
-                            print(f"  [✓] Bing HD Photo downloaded for '{query}'")
+                            print(f"  [✓] Wikimedia HD Photo downloaded for '{query}'")
                             return filename
-                except Exception:
-                    continue
     except Exception:
         pass
 
-    img = Image.new("RGB", (1080, 1920), (18, 32, 24))
-    img.save(filename, "JPEG", quality=92)
-    return filename
+    print(f"  [i] Using bright studio graphic poster for '{query}'")
+    return create_bright_wildlife_poster(query, filename)
 
 
 def create_burned_hud_overlay(caption_text, badge_text, scene_idx, total_scenes, part_num):
     overlay = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
 
-    for y in range(280):
-        alpha = int(170 * (1 - y / 280))
+    for y in range(220):
+        alpha = int(130 * (1 - y / 220))
         draw.line([(0, y), (1080, y)], fill=(0, 0, 0, alpha))
-    for y in range(1180, 1920):
-        alpha = int(220 * ((y - 1180) / 740))
+    for y in range(1320, 1920):
+        alpha = int(175 * ((y - 1320) / 600))
         draw.line([(0, y), (1080, y)], fill=(0, 0, 0, alpha))
 
     try:
@@ -733,10 +860,10 @@ def create_burned_hud_overlay(caption_text, badge_text, scene_idx, total_scenes,
 
     line_height = 92
     total_text_h = len(lines) * line_height
-    box_y1 = 1360 - (total_text_h // 2)
+    box_y1 = 1420 - (total_text_h // 2)
     box_y2 = box_y1 + total_text_h + 44
 
-    draw.rounded_rectangle([55, box_y1, 1025, box_y2], radius=28, fill=(10, 14, 12, 230), outline=(255, 215, 0, 220), width=4)
+    draw.rounded_rectangle([55, box_y1, 1025, box_y2], radius=28, fill=(10, 14, 12, 225), outline=(255, 215, 0, 235), width=4)
 
     for i, line in enumerate(lines):
         t_bbox = draw.textbbox((0, 0), line, font=cap_font)
@@ -755,12 +882,21 @@ def create_burned_hud_overlay(caption_text, badge_text, scene_idx, total_scenes,
 
     progress_fraction = (scene_idx + (0.5 if part_num == 1 else 1.0)) / max(total_scenes, 1)
     prog_w = int(980 * progress_fraction)
-    draw.rounded_rectangle([50, 1835, 1030, 1855], radius=10, fill=(255, 255, 255, 75))
+    draw.rounded_rectangle([50, 1835, 1030, 1855], radius=10, fill=(255, 255, 255, 85))
     draw.rounded_rectangle([50, 1835, 50 + max(prog_w, 25), 1855], radius=10, fill=(255, 215, 0, 255))
 
     out_png = f"hud_{scene_idx}_p{part_num}.png"
     overlay.save(out_png)
     return out_png
+
+
+def composite_photo_with_hud(photo_path, overlay_path, out_jpg):
+    with Image.open(photo_path) as bg, Image.open(overlay_path) as ov:
+        bg_rgba = bg.convert("RGBA").resize((1080, 1920), Image.Resampling.LANCZOS)
+        ov_rgba = ov.convert("RGBA").resize((1080, 1920), Image.Resampling.LANCZOS)
+        comp = Image.alpha_composite(bg_rgba, ov_rgba).convert("RGB")
+        comp.save(out_jpg, "JPEG", quality=94)
+    return out_jpg
 
 
 async def synthesize_scene_voice(urdu_text, index):
@@ -798,54 +934,58 @@ def get_audio_duration(audio_path):
 
 
 def prepare_visual_subclip(media_path, is_video, overlay_path, duration, sub_idx, out_clip):
+    common_out_args = [
+        "-r", "24", "-an",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
+        "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
+        "-video_track_timescale", "24000",
+        out_clip
+    ]
+
     if is_video:
         vf = (
             "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,"
-            "crop=1080:1920,eq=contrast=1.08:saturation=1.15[bg];"
-            "[bg][1:v]overlay=0:0:shortest=1,format=yuv420p[v]"
+            "crop=1080:1920,setsar=1,eq=brightness=0.04:contrast=1.10:saturation=1.18,format=rgba[bg];"
+            "[1:v]scale=1080:1920,setsar=1,format=rgba[ov];"
+            "[bg][ov]overlay=0:0:shortest=1,format=yuv420p,setsar=1[v]"
         )
         cmd = [
             "ffmpeg", "-y",
             "-stream_loop", "-1", "-t", str(duration), "-i", media_path,
-            "-loop", "1", "-t", str(duration), "-i", overlay_path,
+            "-loop", "1", "-framerate", "24", "-t", str(duration), "-i", overlay_path,
             "-filter_complex", vf,
-            "-map", "[v]", "-r", "24", "-an",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-            out_clip
-        ]
+            "-map", "[v]"
+        ] + common_out_args
     else:
         direction = 1 if sub_idx % 2 == 0 else -1
         vf = (
-            f"[0:v]scale=1240:2200:force_original_aspect_ratio=increase,crop=1240:2200,"
-            f"crop=1080:1920:'(in_w-out_w)/2+({direction}*55)*sin(t*1.1)':'(in_h-out_h)/2+70*cos(t*0.8)'[bg];"
-            f"[bg][1:v]overlay=0:0:shortest=1,format=yuv420p[v]"
+            f"[0:v]scale=1240:2200:force_original_aspect_ratio=increase,crop=1240:2200,setsar=1,"
+            f"crop=1080:1920:'(in_w-out_w)/2+({direction}*50)*sin(t*1.1)':'(in_h-out_h)/2+65*cos(t*0.8)',"
+            f"format=rgba[bg];"
+            f"[1:v]scale=1080:1920,setsar=1,format=rgba[ov];"
+            f"[bg][ov]overlay=0:0:shortest=1,format=yuv420p,setsar=1[v]"
         )
         cmd = [
             "ffmpeg", "-y",
-            "-loop", "1", "-t", str(duration), "-i", media_path,
-            "-loop", "1", "-t", str(duration), "-i", overlay_path,
+            "-loop", "1", "-framerate", "24", "-t", str(duration), "-i", media_path,
+            "-loop", "1", "-framerate", "24", "-t", str(duration), "-i", overlay_path,
             "-filter_complex", vf,
-            "-map", "[v]", "-r", "24", "-an",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-            out_clip
-        ]
+            "-map", "[v]"
+        ] + common_out_args
 
     try:
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError:
-        safe_vf = (
-            "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920[bg];"
-            "[bg][1:v]overlay=0:0:shortest=1,format=yuv420p[v]"
-        )
+        baked_jpg = f"baked_{out_clip}.jpg"
+        if is_video:
+            baked_jpg = create_bright_wildlife_poster("WILDLIFE DOCUMENTARY", baked_jpg)
+        else:
+            composite_photo_with_hud(media_path, overlay_path, baked_jpg)
         safe_cmd = [
             "ffmpeg", "-y",
-            "-loop", "1", "-t", str(duration), "-i", media_path,
-            "-loop", "1", "-t", str(duration), "-i", overlay_path,
-            "-filter_complex", safe_vf,
-            "-map", "[v]", "-r", "24", "-an",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-            out_clip
-        ]
+            "-loop", "1", "-framerate", "24", "-t", str(duration), "-i", baked_jpg,
+            "-vf", "scale=1080:1920,setsar=1,format=yuv420p"
+        ] + common_out_args
         subprocess.run(safe_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
@@ -855,8 +995,8 @@ def render_two_cut_scene(scene, idx, total_scenes, badge):
     half_dur = round(total_dur / 2.0, 2)
     rem_dur = round(total_dur - half_dur, 2)
 
-    q1 = scene.get("search_query_1", "wildlife predator")
-    q2 = scene.get("search_query_2", "jungle animal")
+    q1 = scene.get("search_query_1", "wildlife predator daylight")
+    q2 = scene.get("search_query_2", "jungle animal daylight")
     v_q = scene.get("video_query", "")
 
     vid_file = fetch_contextual_stock_video(v_q, f"stock_vid_{idx}.mp4") if v_q else None
@@ -870,6 +1010,10 @@ def render_two_cut_scene(scene, idx, total_scenes, badge):
 
     ov1 = create_burned_hud_overlay(scene.get("caption_part1", "SHIKARI HE SHIKAR"), badge, idx, total_scenes, 1)
     ov2 = create_burned_hud_overlay(scene.get("caption_part2", "JUNGLE KA QANOON"), badge, idx, total_scenes, 2)
+
+    if idx == 0:
+        thumb_bg = media2 if is_vid1 else media1
+        composite_photo_with_hud(thumb_bg, ov1, "cover_thumb.jpg")
 
     sub1 = f"sub_{idx}_1.mp4"
     sub2 = f"sub_{idx}_2.mp4"
@@ -886,8 +1030,10 @@ def render_two_cut_scene(scene, idx, total_scenes, badge):
         "-f", "concat", "-safe", "0", "-i", list_file,
         "-i", audio_path,
         "-map", "0:v", "-map", "1:a",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-        "-c:a", "copy", "-shortest",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
+        "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
+        "-r", "24", "-video_track_timescale", "24000",
+        "-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-shortest",
         scene_out
     ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return scene_out
@@ -911,9 +1057,12 @@ def build_full_video(script_data):
     subprocess.run([
         "ffmpeg", "-y", "-f", "concat", "-safe", "0",
         "-i", "master_concat.txt",
-        "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+        "-vf", "scale=1080:1920,setsar=1,format=yuv420p",
+        "-c:v", "libx264", "-preset", "fast", "-crf", "22",
+        "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
         "-maxrate", "2500k", "-bufsize", "5000k",
-        "-c:a", "aac", "-b:a", "192k",
+        "-movflags", "+faststart",
+        "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
         raw_output
     ], check=True)
 
@@ -931,7 +1080,9 @@ def build_full_video(script_data):
                 "-stream_loop", "-1", "-i", "bgm.ogg",
                 "-filter_complex", "[1:a]volume=0.09[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]",
                 "-map", "0:v", "-map", "[a]",
-                "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+                "-c:v", "copy",
+                "-movflags", "+faststart",
+                "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
                 final_output
             ]
             subprocess.run(mix_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -944,7 +1095,6 @@ def build_full_video(script_data):
 
 
 def upload_to_youtube(video_path, script_data):
-    """Uploads video to YouTube using pure requests (OAuth2 + Resumable Upload API)."""
     if not (YOUTUBE_CLIENT_ID and YOUTUBE_CLIENT_SECRET and YOUTUBE_REFRESH_TOKEN):
         print("ℹ️ YouTube OAuth secrets not set; skipping YouTube auto-upload.")
         return False, "YT Secrets not set"
@@ -980,7 +1130,7 @@ def upload_to_youtube(video_path, script_data):
                 "title": title,
                 "description": description,
                 "tags": tags[:15],
-                "categoryId": "15"  # Pets & Animals
+                "categoryId": "15"
             },
             "status": {
                 "privacyStatus": "public",
@@ -1111,22 +1261,40 @@ def send_to_telegram(video_path, script_data, yt_ok, yt_msg, fb_ok, fb_msg):
         f"{status_block}"
     )[:1000]
 
+    data_payload = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "caption": caption,
+        "width": "1080",
+        "height": "1920",
+        "supports_streaming": "true"
+    }
+
     with open(video_path, "rb") as vf:
-        resp = requests.post(
-            url,
-            data={"chat_id": TELEGRAM_CHAT_ID, "caption": caption},
-            files={"video": vf},
-            timeout=240
-        )
-        print("Telegram Upload Status:", resp.status_code)
+        files_payload = {"video": ("final_reel.mp4", vf, "video/mp4")}
+        thumb_handle = None
+        if os.path.exists("cover_thumb.jpg"):
+            thumb_handle = open("cover_thumb.jpg", "rb")
+            files_payload["thumbnail"] = ("cover_thumb.jpg", thumb_handle, "image/jpeg")
+
+        try:
+            resp = requests.post(
+                url,
+                data=data_payload,
+                files=files_payload,
+                timeout=240
+            )
+            print("Telegram Upload Status:", resp.status_code)
+        finally:
+            if thumb_handle:
+                thumb_handle.close()
 
     if resp.status_code != 200:
         print("Retrying Telegram video upload without caption...")
         with open(video_path, "rb") as vf:
             requests.post(
                 url,
-                data={"chat_id": TELEGRAM_CHAT_ID},
-                files={"video": vf},
+                data={"chat_id": TELEGRAM_CHAT_ID, "supports_streaming": "true"},
+                files={"video": ("final_reel.mp4", vf, "video/mp4")},
                 timeout=240
             )
 
