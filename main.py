@@ -377,9 +377,20 @@ def get_fresh_wildlife_seeds(used_topics):
     return fresh[:6]
 
 
-def discover_gemini_model():
+def discover_gemini_models():
+    """Returns a prioritized list of candidate Gemini models so deprecated ones are skipped automatically."""
+    default_candidates = [
+        "models/gemini-2.5-flash-lite",
+        "models/gemini-3-flash-preview",
+        "models/gemini-3.1-flash-lite-preview",
+        "models/gemini-2.0-flash",
+        "models/gemini-2.0-flash-lite",
+        "models/gemini-2.5-pro",
+        "models/gemini-2.5-flash"
+    ]
     if not GEMINI_API_KEY:
-        return None
+        return default_candidates
+
     try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models?key={GEMINI_API_KEY}"
         r = requests.get(url, timeout=20)
@@ -390,26 +401,21 @@ def discover_gemini_model():
                 methods = m.get("supportedGenerationMethods", [])
                 name = m.get("name", "")
                 if "generateContent" in methods and "gemini" in name.lower():
-                    capable.append(name)
-            preferred_order = [
-                "models/gemini-2.5-flash",
-                "models/gemini-2.0-flash",
-                "models/gemini-1.5-flash-latest",
-                "models/gemini-1.5-flash",
-                "models/gemini-2.5-pro",
-                "models/gemini-1.5-pro-latest"
-            ]
-            for pref in preferred_order:
-                if pref in capable:
-                    return pref
+                    if "tts" not in name.lower() and "image" not in name.lower() and "vision" not in name.lower():
+                        capable.append(name)
+
+            ordered = []
+            for pref in default_candidates:
+                if pref in capable and pref not in ordered:
+                    ordered.append(pref)
             for c in capable:
-                if "flash" in c and "tts" not in c and "image" not in c:
-                    return c
-            if capable:
-                return capable[0]
+                if c not in ordered:
+                    ordered.append(c)
+            if ordered:
+                return ordered
     except Exception as e:
         print(f"  [!] Gemini model discovery note: {e}")
-    return "models/gemini-2.0-flash"
+    return default_candidates
 
 
 def build_fourteen_scenes_from_template(chosen):
@@ -541,23 +547,65 @@ def build_fourteen_scenes_from_template(chosen):
     }
 
 
+def build_dynamic_seed_script(seed_idea):
+    """Dynamically builds a 14-scene script from any unused seed idea if Gemini API is unreachable."""
+    keywords = [w for w in re.findall(r"[a-zA-Z]{3,}", seed_idea) if w.lower() not in {"the", "and", "into", "its", "while", "from", "with"}]
+    a1 = keywords[0] if len(keywords) > 0 else "wildlife predator"
+    a2 = keywords[1] if len(keywords) > 1 else "jungle animal"
+    a3 = keywords[2] if len(keywords) > 2 else "nature safari"
+
+    template = {
+        "topic": f"{seed_idea}: Shikari Khud Shikar",
+        "tagline": f"{seed_idea} — Jab qudrat ke maidan mein shikari khud shikar ban jata hai! 🦁⚡",
+        "description": f"Dekhiye kaise {seed_idea} ke is hairat angez muqable mein jungle ka khaufnak shikari khud shikar ban jata hai!",
+        "badge": "SHIKARI HE SHIKAR",
+        "hook_visual_1": f"{a1} {a2} wildlife daylight",
+        "hook_visual_2": f"{a3} wildlife action daylight",
+        "context_urdu": "جنگل اور فطرت کی دنیا میں ہر شکاری اپنے علاقے پر راج کرنا چاہتا ہے اور کمزور جانوروں کو اپنا آسان شکار سمجھتا ہے۔",
+        "context_cap1": "JUNGLE KA KHATARNAAK MANZAR:",
+        "context_cap2": f"{a1.upper()} KA RAAJ!",
+        "ctx_visual_1": f"{a1} hunting nature",
+        "ctx_visual_2": f"{a2} wild habitat",
+        "event_urdu": "لیکن وقت ہمیشہ ایک جیسا نہیں رہتا، جب اس خطرناک شکاری کا سامنا اپنے سے زیادہ تیز اور بے خوف حریف سے ہوتا ہے تو پانسہ پلٹ جاتا ہے۔",
+        "event_cap1": "JAB AAMNA SAMNA HUA:",
+        "event_cap2": "PAANSA PALAT GAYA!",
+        "evt_visual_1": f"{a2} {a3} closeup",
+        "evt_visual_2": f"{a1} wild action",
+        "impact_urdu": "دونوں کے درمیان ہونے والا یہ ٹکراؤ اتنا تیز اور شدید ہوتا ہے کہ حملہ کرنے والے شکاری کو دفاع کرنے کا موقع بھی نہیں ملتا۔",
+        "impact_cap1": "TOOFANI JAWABI HAMLA:",
+        "impact_cap2": "BACHAO KA MAUQA NAHI!",
+        "imp_visual_1": f"{a1} {a3} battle",
+        "imp_visual_2": f"{a2} fast strike",
+        "response_urdu": "بہترین حکمت عملی، پھرتی اور زوردار وار کی بدولت وہ جانور بازی جیت لیتا ہے جس سے کسی کو اس جوابی حملے کی توقع نہیں ہوتی۔",
+        "response_cap1": "PHURTI AUR TAQAT KA WAR:",
+        "response_cap2": "SHIKARI BE-BAS HO GAYA!",
+        "res_visual_1": f"{a1} wildlife portrait",
+        "res_visual_2": f"{a3} wilderness sun",
+        "future_urdu": "یوں کسی دوسرے کے شکار کی تلاش میں نکلنے والا شکاری اس مقابلے میں شکست کھا کر خود شکار بن جاتا ہے۔",
+        "future_cap1": "QUDRAT KA FAISLA:",
+        "future_cap2": "SHIKARI KHUD SHIKAR BAN GAYA!",
+        "fut_visual_1": f"{a1} {a2} nature",
+        "fut_visual_2": "golden savanna wildlife",
+        "vid_queries": [a1.lower(), a2.lower(), a3.lower(), "wildlife"]
+    }
+    return build_fourteen_scenes_from_template(template)
+
+
 def generate_script_via_gemini(used_topics):
     if not GEMINI_API_KEY:
         return None
 
-    model_name = discover_gemini_model()
-    if not model_name:
-        return None
+    candidate_models = discover_gemini_models()
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={GEMINI_API_KEY}"
-
-    for attempt in range(1, 4):
+    # Try across multiple distinct Gemini models so a deprecated model never blocks generation
+    for attempt, model_name in enumerate(candidate_models[:6], start=1):
+        url = f"https://generativelanguage.googleapis.com/v1beta/{model_name}:generateContent?key={GEMINI_API_KEY}"
         seed_ideas = get_fresh_wildlife_seeds(used_topics)
         chosen_biome = random.choice(WILDLIFE_BIOMES)
         chosen_angle = random.choice(REVERSAL_ANGLES)
         entropy_salt = random.randint(100000, 999999)
 
-        print(f"🦁 [Attempt {attempt}/3] Generating fresh 'Shikari he Shikar' Script via {model_name} (Biome: {chosen_biome})...")
+        print(f"🦁 [Attempt {attempt}] Generating fresh 'Shikari he Shikar' Script via {model_name} (Biome: {chosen_biome})...")
 
         prompt = f"""You are a National Geographic & BBC Earth style wildlife documentary producer creating a thrilling 2-minute (14-scene) Urdu documentary video on the theme: "SHIKARI HE SHIKAR" (The Hunter Becomes the Hunted / Predator vs. Predator / When Prey Turns the Tables on the Predator).
 
@@ -604,9 +652,11 @@ Ensure the `scenes` array has EXACTLY 14 scenes so the total video duration is 2
 
         try:
             resp = requests.post(url, json=payload, timeout=60)
-            if resp.status_code != 200:
-                del payload["generationConfig"]["responseMimeType"]
-                resp = requests.post(url, json=payload, timeout=60)
+            if resp.status_code != 200 and "responseMimeType" in payload.get("generationConfig", {}):
+                # Only retry without responseMimeType if it was a schema/parameter error, NOT a deprecated model 404
+                if "no longer available" not in resp.text.lower() and resp.status_code != 404:
+                    del payload["generationConfig"]["responseMimeType"]
+                    resp = requests.post(url, json=payload, timeout=60)
 
             if resp.status_code == 200:
                 candidates = resp.json().get("candidates", [])
@@ -620,15 +670,15 @@ Ensure the `scenes` array has EXACTLY 14 scenes so the total video duration is 2
 
                     if topic and len(scenes) >= 10:
                         if is_topic_duplicate(topic, used_topics):
-                            print(f"  [!] Gemini suggested a duplicate matchup ('{topic}'). Retrying with new salt...")
+                            print(f"  [!] Gemini suggested a duplicate matchup ('{topic}'). Trying next model/salt...")
                             used_topics.append(topic)
                             continue
-                        print(f"  [✓] Gemini generated 100% fresh script ({len(scenes)} scenes): {topic}")
+                        print(f"  [✓] Gemini generated 100% fresh script via {model_name} ({len(scenes)} scenes): {topic}")
                         return script_data
             else:
-                print(f"  [!] Gemini API status {resp.status_code}: {resp.text[:160]}")
+                print(f"  [!] {model_name} status {resp.status_code}: {resp.text[:140]} -> Switching to next model...")
         except Exception as e:
-            print(f"  [!] Gemini generation attempt {attempt} error: {e}")
+            print(f"  [!] {model_name} error: {e} -> Switching to next model...")
 
     return None
 
@@ -643,17 +693,27 @@ def generate_script_data():
         return ai_script
 
     available = [t for t in FALLBACK_WILDLIFE_TOPICS if not is_topic_duplicate(t["topic"], used)]
-    if not available:
-        raise RuntimeError(
-            "All fallback topics have been used and Gemini API failed to generate a new script. "
-            "Aborting run to strictly prevent repeating an old topic!"
-        )
+    if available:
+        chosen = random.choice(available)
+        used.append(chosen["topic"])
+        save_used_topics(used)
+        print(f"🔥 Building 2-Minute (14-Scene) Wildlife Script for: {chosen['topic']}")
+        return build_fourteen_scenes_from_template(chosen)
 
-    chosen = random.choice(available)
-    used.append(chosen["topic"])
-    save_used_topics(used)
-    print(f"🔥 Building 2-Minute (14-Scene) Wildlife Script for: {chosen['topic']}")
-    return build_fourteen_scenes_from_template(chosen)
+    # Secondary fallback: build a fresh 14-scene script from any unused seed in WILDLIFE_SEED_IDEAS
+    unused_seeds = [s for s in WILDLIFE_SEED_IDEAS if not is_topic_duplicate(s, used)]
+    if unused_seeds:
+        chosen_seed = random.choice(unused_seeds)
+        dyn_script = build_dynamic_seed_script(chosen_seed)
+        used.append(dyn_script["topic"])
+        save_used_topics(used)
+        print(f"🔥 Built Fresh 14-Scene Dynamic Seed Script for: {dyn_script['topic']}")
+        return dyn_script
+
+    raise RuntimeError(
+        "All fallback and seed topics have been used and Gemini API failed. "
+        "Aborting run to strictly prevent repeating an old topic!"
+    )
 
 
 def verify_and_grade_image(filepath):
