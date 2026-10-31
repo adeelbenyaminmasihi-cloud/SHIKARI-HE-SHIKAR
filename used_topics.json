@@ -1,5 +1,13 @@
-[
-  "Giant River Otters vs Caiman: Amazon Ki Nadi Mein Gang War",
-  "Orca Killer Whale vs Great White Shark: Samandar Mein Shikari Ka Shikar",
-  "Mongoose vs Black Mamba: Maut Ke Saudagar Ka Sab Se Bara Dushman"
-]
+permissions:
+  contents: write
+
+# ... inside your job steps, right after running python main.py:
+      - name: Save Lifetime Used Topics History to Repo
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -f used_topics.json ]; then
+            git add used_topics.json
+            git diff --staged --quiet || (git pull --rebase origin main && git commit -m "chore: record used wildlife topic [skip ci]" && git push)
+          fi
